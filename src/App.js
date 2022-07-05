@@ -1,22 +1,33 @@
 import './App.css';
-import { AgoraEduSDK } from 'agora-classroom-sdk';
+import { AgoraEduSDK, EduClassroomUIStore } from 'agora-classroom-sdk';
+import { useEffect, useState } from 'react';
+import { EduClassroomStore } from 'agora-edu-core';
 
 function App() {
-  console.log('AgoraEduSDK is available', AgoraEduSDK);
+  const [launchDone, setLaunchDone] = useState(false);
 
-  function launch() {
-    AgoraEduSDK.config({
+  useEffect(() => {
+    if (launchDone) {
+      const store = new EduClassroomStore();
+      const res = store.initialize();
+      const a = new EduClassroomUIStore(res);
+
+      console.log('a', a);
+    }
+  }, [launchDone]);
+
+  async function launch() {
+    await AgoraEduSDK.config({
       appId: '8a23d043d1f2493b9e50b358002542c7',
       region: 'NA',
     });
 
-    // Launch a classroom
-    AgoraEduSDK.launch(document.querySelector(`#launch-button`), {
+    await AgoraEduSDK.launch(document.querySelector(`#launch-button`), {
       rtmToken:
-        '0068a23d043d1f2493b9e50b358002542c7IADlRD73grIqn/MeIfu91nq+LdDXRevrrVXEPx5P5glQIdWm9rAAAAAAEACoG0FNlwnFYgEA6AOXCcVi',
+        '0068a23d043d1f2493b9e50b358002542c7IAAykvvShrc+qhM+XgPfEZnJTTuRY9UTHx6UA4tL6HYvhdWm9rAAAAAAEACrJHJ9fyjFYgEA6AN/KMVi',
       userUuid: 'teacher',
       userName: 'teacher',
-      roomUuid: '09099',
+      roomUuid: '019',
       roleType: 1,
       roomType: 4,
       roomName: 'demo-class',
@@ -29,6 +40,8 @@ function App() {
         console.log('evt', evt);
       },
     });
+
+    setLaunchDone(true);
   }
 
   return (
